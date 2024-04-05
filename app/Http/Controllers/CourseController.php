@@ -130,10 +130,12 @@ class CourseController extends Controller
 
     public function getDownloadResource($resource_id, $slug)
     {
+ 
         $file_details = \DB::table('course_files')->where('id',$resource_id)->first();
         $course = \DB::table('courses')->where('course_slug',$slug)->first();
         
-        $file = public_path('storage/course/'.$course->id.'/'.$file_details->file_name.'.'.$file_details->file_extension);
+        $file = storage_path('app/public/course/'.$course->id.'/'.$file_details->file_name.'.'.$file_details->file_extension);
+
         $headers = array(
               'Content-Type: application/pdf',
             );
@@ -616,6 +618,7 @@ class CourseController extends Controller
     
     public function postLectureSave(Request $request)
     {   
+
         $data['section_id'] = $request->input('sectionid');
         $data['title'] = $request->input('lecture');
         $data['sort_order'] = $request->input('position');
@@ -677,7 +680,7 @@ class CourseController extends Controller
         $data['description'] = $request->input('lecturedescription');
         $now_date = date("Y-m-d H:i:s");
         $data['updatedOn'] = $now_date;
-        
+
         if($request->input('lid') == 0){
             $newID = $this->model->insertLectureQuizRow($data , '');
         } else {
@@ -693,6 +696,7 @@ class CourseController extends Controller
         $file = array('video' => $video);
         $rules = array('video' => 'required|mimes:mp4,mov,avi,flv');
         $validator = Validator::make($file, $rules);
+
 
             $file_tmp_name = $video->getPathName();
             $file_name = explode('.',$video->getClientOriginalName());
@@ -755,6 +759,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {               $ffmpeg_path = b
             
     public function postLectureAudioSave($lid,Request $request)
     {
+
         $course_id = $request->input('course_id');
         $audio = $request->file('lectureaudio');
         $file = array('audio' => $audio);
@@ -819,6 +824,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {               $ffmpeg_path = b
         
     public function postLecturePresentationSave($lid,Request $request)
     {
+
         $course_id = $request->input('course_id');
         $document = $request->file('lecturepre');
         $file = array('document' => $document);
@@ -882,6 +888,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {               $ffmpeg_path = b
         
     public function postLectureDocumentSave($lid,Request $request)
     {
+
         $course_id = $request->input('course_id');
         $document = $request->file('lecturedoc');
         $file = array('document' => $document);
@@ -947,7 +954,7 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {               $ffmpeg_path = b
     {
             $course_id = $request->input('course_id');
             $document = $request->file('lectureres');
-        
+ 
             $file_tmp_name = $document->getPathName();
             $file_name = explode('.',$document->getClientOriginalName());
             $file_name = $file_name[0].'_'.time().rand(4,9999);
@@ -999,7 +1006,8 @@ if (strtoupper(substr(PHP_OS, 0, 3)) === 'WIN') {               $ffmpeg_path = b
     public function postLectureTextSave(Request $request)
     {
         $document = $request->input('lecturedescription');
-        $lid = $request->input('lid');        
+        $lid = $request->input('lid');   
+
         if(!empty($lid)){
             $data['contenttext'] = $document;
             $data['media_type'] = '3';
